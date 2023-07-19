@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Clone</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        body{
+            background-color: #01011c;
+           
+        }
+        .white{
+            color:white;
+        }
+        .container-fluid{
+            margin:0px;
+        }
+        .top {
+
+            margin: 20px 5px 20px 5px;
+        }
+
+        .image-container {
+            width: 250px;
+            height: 300px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        .image-container :hover {
+            transform: scale(1.06);
+            z-index: 4;
+            /* transition: transform 2s ease, opacity .5s ease-out */
+        }
+
+        .image-container {
+            transition: 2s;
+            transition-timing-function: ease-in-out;
+            transition-delay: 1s;
+        }
+
+        .scrollable-div {
+            padding: 20px;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+
+        .group-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .group-number {
+            margin-right: 10px;
+        }
+
+        .group-image {
+            width: 60px;
+            height: 60px;
+            margin-right: 10px;
+        }
+
+        .group-text {
+            flex-grow: 1;
+        }
+
+        .slide {
+            overflow: scroll;
+        }
+
+        .list-container {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .list-item {
+            display: inline-block;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .list-item:hover {
+            transform: translateX(10px);
+        }
+
+        .list-image {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+        }
+        .list-text{
+            display: inline-block;
+            color:white;
+        }
+        .round {
+            border-radius: 50%;
+        }
+
+        .slide-continer {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            overflow: hidden;
+
+        }
+
+        .slide-img {
+            display: inline-block;
+            width: 100px;
+            margin: 5px;
+            transition: transform 0.5s linear;
+        }
+
+        .slide-img:hover img {
+            transition: transform 0.5s linear;
+        }
+
+        .slide-img.scroll {
+            animation: scrollImages 10s infinite linear;
+        }
+
+        @keyframes scrollImages {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+        <a class="navbar-brand" href="#">
+            <img src="data:image/jpeg;base64,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"
+                alt="" width="30" height="30" class="d-inline-block align-text-top">
+            Spotify</a>
+        <div class="navbar-brand">favourite</div>
+        <!-- Navbar links -->
+        <div class="navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><input type="text" placeholder="search"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><span><i
+                                class="fas fa-bell bell-icon mx-5 d-inline-block align-text-top round form-content"
+                                style="color: aliceblue;"></i></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><img
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="broken" width="30" height="24" class="d-inline-block align-text-top round"> </a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="row container-fluid">
+        <div class="scrollable-div col-sm-8  top">
+
+            <div class="row top">
+                <div class="col-sm-4">
+                    <div class="image-container">
+                        <img src="https://th.bing.com/th/id/OIP.VN2GZgtyYutavbhL7McviQHaJQ?w=208&h=260&c=7&r=0&o=5&pid=1.7"
+                            class="img-fluid">
+                    </div>
+
+                </div>
+                <div class="col-sm-4 img-container">
+                    <div class="image-container">
+                        <img src="https://th.bing.com/th/id/OIP.byzaBlQev7mJKaB54awnqAHaLb?w=201&h=310&c=7&r=0&o=5&pid=1.7"
+                            class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-sm-4 ">
+                    <div class="image-container">
+                        <img src="https://th.bing.com/th/id/OIP.kJDhiY9pqyEUm2bwGXSvegHaJQ?w=208&h=260&c=7&r=0&o=5&pid=1.7"
+                            class="img-fluid">
+                    </div>
+                </div>
+            </div>
+            <h4 class="white"> Latest Release</h4>
+            <div class="container row">
+
+
+                <div class="col-sm-6">
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="group-item">
+                                <img class="group-image"
+                                    src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                    alt="Image 2" width="80px" height="80px">
+                                <span class="group-text ">Text 2</span>
+                                <i class="fa-regular fa-heart heart-icon "></i>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="group-item">
+                                <img class="group-image"
+                                    src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                    alt="Image 2" width="80px" height="80px">
+                                <span class="group-text ">Text 2</span>
+                                <i class="fa-regular fa-heart heart-icon "></i>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="group-item">
+                                <img class="group-image"
+                                    src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                    alt="Image 3" width="80px" height="80px">
+                                <span class="group-text ">Text 3</span>
+                                <i class="fa-regular fa-heart heart-icon "></i>
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+
+
+                <div class="col-sm-6">
+
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="group-item">
+                                <img class="group-image"
+                                    src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                    alt="Image 2" width="80px" height="80px">
+                                <span class="group-text">Text 2</span>
+                                <i class="fa-regular fa-heart heart-icon "></i>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="group-item">
+                                <img class="group-image"
+                                    src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                    alt="Image 2" width="80px" height="80px">
+                                <span class="group-text">Text 2</span>
+                                <i class="fa-regular fa-heart heart-icon "></i>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="group-item">
+                                <img class="group-image"
+                                    src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                    alt="Image 3" width="80px" height="80px">
+                                <span class="group-text ">Text 3</span>
+                                <i class="fa-regular fa-heart heart-icon "></i>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <h2 class="white">Popular Artist</h2>
+                <div class=" containers ">
+                    <div class="slide-continer">
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+
+                        <div class="slide-img scroll">
+                            <img class="list-image round"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="top">
+                <h2  class="white">Latest English</h2>
+                <div class=" containers ">
+                    <div class="slide-continer">
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Taylor Swift</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Shakira</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Justin Beiber</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Salena Gomez</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Martin</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Ed Sheran</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Taylor Swift</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="top">
+                <h2 class="white">Latest Hindi</h2>
+                <div class=" containers ">
+                    <div class="slide-continer">
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Arijit Singh</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image"
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Atif Aslam</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Kishor Kumar</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Armaan Malik</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Shreya Ghosla</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Sonu Nigam</span>
+                        </div>
+
+                        <div class="slide-img ">
+                            <img class="list-image "
+                                src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                                alt="Image 3" width="100px" height="100px"><br>
+                            <span class="list-text ">Lata Mangeshkar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scrollable-div col-sm-3" style="border-left: 1px solid;">
+            <h3 class="mb-3 white">Queue</h3>
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">01</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 1">
+                        <span class="group-text ">Text 1</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">02</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 2">
+                        <span class="group-text">Text 2</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">03</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 3">
+                        <span class="group-text ">Text 3</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">01</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 1">
+                        <span class="group-text ">Text 1</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">02</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 2">
+                        <span class="group-text ">Text 2</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">03</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 3">
+                        <span class="group-text ">Text 3</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">01</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 1">
+                        <span class="group-text ">Text 1</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">02</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 2">
+                        <span class="group-text ">Text 2</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">03</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 3">
+                        <span class="group-text ">Text 3</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+                    </div>
+                </li>
+
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">01</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 1">
+                        <span class="group-text ">Text 1</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">02</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 2">
+                        <span class="group-text ">Text 2</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="group-item">
+                        <span class="group-number ">03</span>
+                        <img class="group-image"
+                            src="https://th.bing.com/th/id/OIP.MYwdjrgFU0JwL6ahVIdgZwHaH_?w=186&h=201&c=7&r=0&o=5&pid=1.7"
+                            alt="Image 3">
+                        <span class="group-text ">Text 3</span>
+                        <i class="fa-regular fa-heart heart-icon "></i>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+<!-- <script>
+    const imageContainer = document.getElementsByClassName('.slide-img');
+    imageContainer.classList.add('scroll');
+</script> -->
+
+</html>
